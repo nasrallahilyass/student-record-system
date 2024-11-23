@@ -5,7 +5,19 @@ public class StudentManager {
     private ArrayList<Student> students;
     private HashMap<String, Student> studentMap;
 
+    // Constructors:
+    public StudentManager() {
+        this.students = new ArrayList<>();
+        this.studentMap = new HashMap<>();
+    }
+
+    public StudentManager(ArrayList<Student> students, HashMap<String, Student> studentMap) {
+        this.students = students;
+        this.studentMap = studentMap;
+    }
+
     // Getters and Setters:
+
     public ArrayList<Student> getStudents() {
         return students;
     }
@@ -22,125 +34,97 @@ public class StudentManager {
         this.studentMap = studentMap;
     }
 
-    // Constructors:
-    public StudentManager() {
-        this.students = new ArrayList<>();
-        this.studentMap = new HashMap<>();
-    }
-
-    public StudentManager(ArrayList<Student> students, HashMap<String, Student> studentMap) {
-        this.students = new ArrayList<>();
-        this.studentMap = new HashMap<>();
-    }
-
     // Methods:
-
-    public boolean checkIfStudentExistsById(String studentId) {
-        if (studentMap.containsKey(studentId)) {
-            System.out.println("Student with id " + studentId + " already exists");
-            return true;
-        }
-        return false;
-    }
-
-    public boolean checkIfStudentExistsByEmail(String studentEmail) {
-        for (Student student : students) {
-            if (student.getEmail().equalsIgnoreCase(studentEmail)) {
-                System.out.println("Student with email " + studentEmail + " already exists");
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // CRUD:
 
     public void viewListOfStudents() {
         if (students.isEmpty()) {
-            System.out.println("####################################################");
-            System.out.println("#           No Students Available in the List      #");
-            System.out.println("####################################################");
-            return;
+            System.out.println("🔍 No students found in the system. Please add students to view the list.");
+        } else {
+            System.out.println("==========================================");
+            System.out.println("📋 Detailed List of Students");
+            System.out.println("==========================================");
+
+            int count = 1;
+            for (Student student : students) {
+                System.out.println("🔢 Student #" + count + ":");
+                System.out.println(student);
+                System.out.println("------------------------------------------");
+                count++;
+            }
+
+            System.out.println("==========================================");
+            System.out.println("✅ Total Students: " + students.size());
         }
-
-        System.out.println("##########################################################");
-        System.out.println("################### LIST OF STUDENTS #####################");
-        System.out.println("##########################################################");
-        System.out.printf("%-5s %-20s %-5s %-10s %-25s %-15s%n", "ID", "Name", "Age", "Grade", "Email", "Phone Number");
-        System.out.println("----------------------------------------------------------");
-
-        for (Student student : students) {
-            System.out.printf("%-5s %-20s %-5d %-10.2f %-25s %-15d%n",
-                    student.getId().substring(0, 5), // Displaying the first 5 characters of ID for readability
-                    student.getName(),
-                    student.getAge(),
-                    student.getGrade(),
-                    student.getEmail(),
-                    student.getPhone());
-        }
-
-        System.out.println("##########################################################");
     }
 
     public void viewStudentById(String studentId) {
-        System.out.println("################################################");
-        System.out.println("Student By Id:" + studentId + " :");
-        if(studentMap.containsKey(studentId)) {
-            System.out.println(studentMap.get(studentId));
-        } else {
+        if (!studentMap.containsKey(studentId)) {
             System.out.println("Student with id " + studentId + " does not exist");
+            return;
         }
-        System.out.println("################################################");
+
+        System.out.println("Student with id " + studentId + " is:");
+        Student student = studentMap.get(studentId);
+        System.out.println(student);
     }
 
-    public void addNewStudent(Student student) {
-        if (checkIfStudentExistsById(student.getId())) {
-            System.out.println("Student with ID " + student.getId() + " already exists");
+    public void searchStudentByName(String studentName) {
+        boolean found = false;
+        for (Student student : students) {
+            if (student.getName().equalsIgnoreCase(studentName)) {
+                System.out.println("Student with name " + studentName + " found:");
+                System.out.println(student);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("Student with name " + studentName + " not found");
+        }
+    }
+
+    public void addStudent(Student student) {
+        if (studentMap.containsKey(student.getId())) {
+            System.out.println("Student with id " + student.getId() + " already exists");
             return;
         }
 
-        if (checkIfStudentExistsByEmail(student.getEmail())) {
-            System.out.println("Student with email " + student.getEmail() + " already exists");
-            return;
+        for (Student existingStudent : students) {
+            if (existingStudent.getEmail().equals(student.getEmail())) {
+                System.out.println("Student with email " + student.getEmail() + " already exists");
+                return;
+            }
         }
 
         students.add(student);
         studentMap.put(student.getId(), student);
-        System.out.println("Student Created Successfully!");
+        System.out.println("Student added successfully with id: " + student.getId() + "✅");
     }
 
-    public void updateStudent(String id, String newName, int newAge, double newGrade, String newEmail, long newPhone){
-        if(!studentMap.containsKey(id)) {
-            System.out.println("Student with id " + id + " does not exist");
+    public void updateStudentById(String studentId, Student student) {
+        if (!studentMap.containsKey(studentId)) {
+            System.out.println("Student with id " + studentId + " does not exist");
         }
 
-        if(newAge <= 5){
-            System.out.println("Invalid age.");
-        }
+        Student existingStudent = studentMap.get(studentId);
+        existingStudent.setName(student.getName());
+        existingStudent.setEmail(student.getEmail());
+        existingStudent.setGrade(student.getGrade());
+        existingStudent.setAge(student.getAge());
 
-        if(newGrade < 0 && newGrade > 20){
-            System.out.println("Please enter a valid grade. Should be between 0 and 20.");
-        }
+        System.out.println("Student with id " + studentId + " updated successfully ✅");
 
-        Student student = studentMap.get(id);
-
-        // Data:
-        student.setName(newName);
-        student.setAge(newAge);
-        student.setGrade(newGrade);
-        student.setEmail(newEmail);
-        student.setPhone(newPhone);
-
-        System.out.println("Student with ID " + id + " has been successfully updated.");
     }
 
-    public void deleteStudent(String id) {
-        if(!studentMap.containsKey(id)) {
-            System.out.println("Student with id " + id + " does not exist");
+    public void removeStudent(String studentId) {
+        if (!studentMap.containsKey(studentId)) {
+            System.out.println("Student with id " + studentId + " does not exist");
+            return;
         }
-        studentMap.remove(id);
-        System.out.println("Student with ID " + id + " has been successfully deleted.");
+
+        Student student = studentMap.get(studentId);
+        students.remove(student);
+        studentMap.remove(studentId);
+        System.out.println("Student with id " + studentId + " removed successfully ✅");
     }
-
-
 }

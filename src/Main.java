@@ -1,40 +1,125 @@
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        StudentManager sm = new StudentManager();
+        StudentManager studentManager = new StudentManager();
+        Scanner scanner = new Scanner(System.in);
+        boolean running = true;
 
-        // Adding 10 Students to the StudentManager
-        Student student1 = new Student(null, "Alex", 20, 18, "alex.periara@gmail.com", 1222333444);
-        Student student2 = new Student(null, "Max", 24, 10, "max.holloway@gmail.com", 1222333555);
-        Student student3 = new Student(null, "Ketty Perry", 26, 19, "ketty.perry@gmail.com", 1222333888);
-        Student student4 = new Student(null, "Sam Smith", 21, 15, "sam.smith@gmail.com", 1222333999);
-        Student student5 = new Student(null, "Lucy Green", 23, 12, "lucy.green@gmail.com", 1222334000);
-        Student student6 = new Student(null, "Jake Ryan", 19, 17, "jake.ryan@gmail.com", 1222334111);
-        Student student7 = new Student(null, "Olivia Brown", 25, 14, "olivia.brown@gmail.com", 1222334222);
-        Student student8 = new Student(null, "Liam White", 22, 13, "liam.white@gmail.com", 1222334333);
-        Student student9 = new Student(null, "Emma Stone", 24, 16, "emma.stone@gmail.com", 1222334444);
-        Student student10 = new Student(null, "Mia Johnson", 20, 18, "mia.johnson@gmail.com", 1222334555);
+        // Adding some initial students
+        studentManager.addStudent(new Student("10001", "John Doe", "johndoe@mail.com", "A", 20));
+        studentManager.addStudent(new Student("10002", "Jane Doe", "janedoe@mail.com", "B", 21));
+        studentManager.addStudent(new Student("10003", "Alex Smith", "alexsmith@mail.com", "C", 22));
+        studentManager.addStudent(new Student("10004", "Alexa Smith", "alexasmith@mail.com", "D", 23));
+        studentManager.addStudent(new Student("10005", "Max Holloway", "maxholloway@mail.com", "E", 24));
 
-        // Adding Students to StudentManager
-        sm.addNewStudent(student1);
-        sm.addNewStudent(student2);
-        sm.addNewStudent(student3);
-        sm.addNewStudent(student4);
-        sm.addNewStudent(student5);
-        sm.addNewStudent(student6);
-        sm.addNewStudent(student7);
-        sm.addNewStudent(student8);
-        sm.addNewStudent(student9);
-        sm.addNewStudent(student10);
+        System.out.println("Welcome to the Student Management System!");
 
-        // Delete Students:
-        sm.deleteStudent(student1.getId());
-        sm.deleteStudent(student2.getId());
-        sm.deleteStudent(student3.getId());
+        while (running) {
+            printMenu();
+            int choice = getUserChoice(scanner);
 
-        // Updating a Student
-        sm.updateStudent(student4.getId(), "Alex VIP!", 22, 16, "alex.looks.VIP!@gmail.com", 999999999);
+            switch (choice) {
+                case 1 -> studentManager.viewListOfStudents();
+                case 2 -> viewStudentById(scanner, studentManager);
+                case 3 -> searchStudentByName(scanner, studentManager);
+                case 4 -> addStudent(scanner, studentManager);
+                case 5 -> updateStudent(scanner, studentManager);
+                case 6 -> removeStudent(scanner, studentManager);
+                case 7 -> {
+                    System.out.println("Thank you for using the Student Management System. Goodbye!");
+                    running = false;
+                }
+                default -> System.out.println("Invalid choice. Please select a valid option.");
+            }
 
-        // Viewing the List of Students
-        sm.viewListOfStudents();
+            System.out.println(); // Add space after each action
+        }
+
+        scanner.close();
+    }
+
+    private static void printMenu() {
+        System.out.println("""
+                -----------------------------
+                Student Management Menu
+                -----------------------------
+                1. View all students
+                2. View student by ID
+                3. Search student by name
+                4. Add a student
+                5. Update a student by ID
+                6. Remove a student by ID
+                7. Exit
+                -----------------------------
+                """);
+    }
+
+    private static int getUserChoice(Scanner scanner) {
+        System.out.print("Enter your choice: ");
+        while (!scanner.hasNextInt()) {
+            System.out.println("Invalid input. Please enter a number.");
+            scanner.next(); // Clear invalid input
+            System.out.print("Enter your choice: ");
+        }
+        return scanner.nextInt();
+    }
+
+    private static void viewStudentById(Scanner scanner, StudentManager studentManager) {
+        scanner.nextLine(); // Clear newline
+        System.out.print("Enter Student ID: ");
+        String id = scanner.nextLine();
+        studentManager.viewStudentById(id);
+    }
+
+    private static void searchStudentByName(Scanner scanner, StudentManager studentManager) {
+        scanner.nextLine(); // Clear newline
+        System.out.print("Enter Student Name: ");
+        String name = scanner.nextLine();
+        studentManager.searchStudentByName(name);
+    }
+
+    private static void addStudent(Scanner scanner, StudentManager studentManager) {
+        scanner.nextLine(); // Clear newline
+        System.out.print("Enter Student ID: ");
+        String id = scanner.nextLine();
+        System.out.print("Enter Student Name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter Student Email: ");
+        String email = scanner.nextLine();
+        System.out.print("Enter Student Grade: ");
+        String grade = scanner.nextLine();
+        System.out.print("Enter Student Age: ");
+        int age = scanner.nextInt();
+        scanner.nextLine(); // Clear newline
+
+        Student student = new Student(id, name, email, grade, age);
+        studentManager.addStudent(student);
+    }
+
+    private static void updateStudent(Scanner scanner, StudentManager studentManager) {
+        scanner.nextLine(); // Clear newline
+        System.out.print("Enter Student ID to update: ");
+        String id = scanner.nextLine();
+        System.out.println("Enter updated details:");
+        System.out.print("Name: ");
+        String name = scanner.nextLine();
+        System.out.print("Email: ");
+        String email = scanner.nextLine();
+        System.out.print("Grade: ");
+        String grade = scanner.nextLine();
+        System.out.print("Age: ");
+        int age = scanner.nextInt();
+        scanner.nextLine(); // Clear newline
+
+        Student updatedStudent = new Student("", name, email, grade, age);
+        studentManager.updateStudentById(id, updatedStudent);
+    }
+
+    private static void removeStudent(Scanner scanner, StudentManager studentManager) {
+        scanner.nextLine(); // Clear newline
+        System.out.print("Enter Student ID to remove: ");
+        String id = scanner.nextLine();
+        studentManager.removeStudent(id);
     }
 }

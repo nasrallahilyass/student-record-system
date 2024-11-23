@@ -1,33 +1,19 @@
-import java.util.UUID;
-
 public class Student {
-    private String id;
-    private String name;
+    private String id, name, email, grade;
     private int age;
-    private double grade;
-    private String email;
-    private long phone;
 
-    // Constructors:
+
     public Student() {
-
     }
 
-    public Student(String id, String name, int age, double grade, String email, long phone) {
-        this.id = generateUniqueId();
+    public Student(String id, String name, String email, String grade, int age) {
+        this.id = id;
         this.name = name;
-        this.age = age;
-        this.grade = grade;
         this.email = email;
-        this.phone = phone;
+        this.grade = grade;
+        this.age = age;
     }
 
-    // Methods:
-    private String generateUniqueId() {
-        return UUID.randomUUID().toString();
-    }
-
-    // Getters and Setters:
     public String getId() {
         return id;
     }
@@ -44,22 +30,6 @@ public class Student {
         this.name = name;
     }
 
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public double getGrade() {
-        return grade;
-    }
-
-    public void setGrade(double grade) {
-        this.grade = grade;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -68,23 +38,34 @@ public class Student {
         this.email = email;
     }
 
-    public long getPhone() {
-        return phone;
+    public String getGrade() {
+        return grade;
     }
 
-    public void setPhone(long phone) {
-        this.phone = phone;
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
     @Override
     public String toString() {
-        return "Student{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", age=" + age +
-                ", grade=" + grade +
-                ", email='" + email + '\'' +
-                ", phone=" + phone +
-                '}';
+        return String.format(
+                "👩‍🎓 Student { %n" +
+                        "    🆔 ID: '%s', %n" +
+                        "    📛 Name: '%s', %n" +
+                        "    📧 Email: '%s', %n" +
+                        "    🏅 Grade: '%s', %n" +
+                        "    🎂 Age: %d %n" +
+                        "}",
+                id, name, email, grade, age
+        );
     }
+
 }
